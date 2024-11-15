@@ -8,16 +8,13 @@ export async function POST(req) {
     try {
         const { audioData } = await req.json();
 
-        // Check if audioData is defined and log for debugging
         if (!audioData) {
             console.error("audioData is undefined. Ensure the client is sending base64 audio data.");
             return new Response(JSON.stringify({ error: "audioData is missing from the request" }), { status: 400 });
         }
 
-        // Remove base64 prefix if present, like 'data:audio/wav;base64,'
         const base64Audio = audioData.includes(",") ? audioData.split(",")[1] : audioData;
 
-        // Convert the base64 string to binary buffer
         const buffer = Buffer.from(base64Audio, 'base64');
 
         // Log buffer info for debugging

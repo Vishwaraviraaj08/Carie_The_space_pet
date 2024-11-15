@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import Head from "next/head";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 
 export default function Chatbot() {
@@ -91,7 +92,15 @@ export default function Chatbot() {
                         rel="stylesheet"
                     />
                 </Head>
-                <div className={styles.chatHeader}>Carie: The Space Pet</div>
+                <div style={{display:"flex", justifyContent:'space-evenly', alignItems:'center', backgroundColor:'#3a3a3a'}}>
+                    <div className={styles.chatHeader}>Carie: The Space Pet</div>
+                    <Link href={"/emotion-recog"}>
+                        <button className={styles.sendButton} >
+                            Emotion Recognition
+                        </button>
+                    </Link>
+
+                </div>
                 <div className={styles.chatBody} ref={chatBodyRef}>
                     {messages.map((msg, index) => (
                         <div
