@@ -1,10 +1,10 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 
-const FaceRecognition = () => {
+const FaceRecognition = ({ onEmotionChange }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
-    const [emotion, setEmotion] = useState('No sadness detected');
+    const [emotion, setEmotion] = useState('No face detected');
     const sadnessThreshold = 0.4;
 
     useEffect(() => {
@@ -44,7 +44,6 @@ const FaceRecognition = () => {
 
             canvas.width = video.width;
             canvas.height = video.height;
-
             const displaySize = { width: video.width, height: video.height };
             faceapi.matchDimensions(canvas, displaySize);
 
@@ -68,17 +67,18 @@ const FaceRecognition = () => {
                     const happinessLevel = expressions.happy || 0;
                     const neutralLevel = expressions.neutral || 0;
 
-                    console.log("Detected emotions:", expressions);
-
-                    // Set emotion based on conditions
+                    let detectedEmotion = 'Neutral';
                     if (happinessLevel < 0.5 && sadnessLevel > sadnessThreshold) {
-                        setEmotion('Sadness detected');
+                        detectedEmotion = 'Sad';
                     } else if (happinessLevel < 0.5 && neutralLevel < 0.95) {
-                        setEmotion('Sadness detected');
+                        detectedEmotion = 'Sad';
                     } else if (happinessLevel >= 0.5) {
-                        setEmotion('Happy detected');
-                    } else {
-                        setEmotion('Neutral');
+                        detectedEmotion = 'Happy';
+                    }
+
+                    setEmotion(detectedEmotion);
+                    if (onEmotionChange) {
+                        onEmotionChange(detectedEmotion);
                     }
                 } else {
                     setEmotion('No face detected');
@@ -106,7 +106,7 @@ const FaceRecognition = () => {
             videoRef.current?.removeEventListener('play', handlePlay);
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [onEmotionChange]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
